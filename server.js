@@ -4,8 +4,8 @@ const path = require('path');
 const app = express();
 const db = require('./connect/connect');
 const PORT = process.env.PORT || 3001;
-// require('dotenv').config();
-const {beginQs} = require("./index");
+require('dotenv').config();
+// const {beginQs} = require("./index");
 const {addingDepartment} = require('./index');
 const {addingEmployee} = require('./index');
 const {addingRole} = require('./index');
@@ -18,7 +18,18 @@ app.use(express.urlencoded({ extended: true }));
 
 
   // Query database 
-  //ADD TABLE NAME
+  async function getDepartmentNames() {
+    let query = "SELECT name FROM department";
+    const rows = await db.query(query);
+    //console.log("Number of rows returned: " + rows.length);
+
+    let departments = [];
+    for(const row of rows) {
+        departments.push(row.name);
+    }
+
+    return departments;
+}
 db.query('SELECT * FROM tablenameHERE', function (err, results) {
     console.log(results);
   });
