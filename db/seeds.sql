@@ -1,9 +1,9 @@
-INSERT INTO departments (department_name) VALUES ('IT');
-INSERT INTO departments (department_name) VALUES ('Sales');
-INSERT INTO departments (department_name) VALUES ('Human Resources');
-INSERT INTO departments (department_name) VALUES ('Finance');
+INSERT INTO department (department_name) VALUES ('IT');
+INSERT INTO department (department_name) VALUES ('Sales');
+INSERT INTO department (department_name) VALUES ('Human Resources');
+INSERT INTO department (department_name) VALUES ('Finance');
 
-INSERT INTO roles (title, salary, department_id)
+INSERT INTO role (title, salary, department_id)
 VALUES 
 ('Technical Manager', 150000, 1),
 ('Fullstack Developer', 120000, 1),
@@ -15,10 +15,10 @@ VALUES
 ('Counselor', 65000, 3),
 ('HR Director', 90000, 3),
 ('Company Lawyer', 180000, 4),
-('Accoutant', 75000, 4),
+('Accountant', 75000, 4),
 ('Financial Analyst', 95000, 4);
 
-INSERT INTO employees (first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
 -- manager
 ("Kelsey", "Perkins", 1, 10), 
@@ -32,7 +32,7 @@ VALUES
 ("Dax", "Clark", 3, 12),
 ("Ally", "Lee", 3),
 ("Paige", "Smith", 3),
-("Tomas", "Brown", 4),
+("Tomas", "Rivera", 4),
 ("William", "Bradely", 4),
 -- manager
 ("Glenn", "Taylor", 4, 13),
