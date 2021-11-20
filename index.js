@@ -49,8 +49,9 @@ function start() {
       case 'Update A Role':
         updatRole();
         break;
-     case "End":
+     case "Quit":
         db.end();
+        console.log('Goodbye!');
         break;
     }
   });
