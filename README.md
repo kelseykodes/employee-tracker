@@ -20,7 +20,8 @@ run the following command in your terminal: npm i
 run the following command in your terminal: node index.js
 
 ## Video:
-- <a href="https://www.youtube.com/watch?v=0DLgNjBQbZk">Video Link</a>
+- <a href="https://youtu.be/f72CDP2ogt8">Click Here: Video Link</a>
+<img src='./assets/img/pic.png'>
 
 ## Contributing:
   None 
