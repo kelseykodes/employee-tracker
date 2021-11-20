@@ -180,12 +180,12 @@ function addNewDept(deptInfo) {
 
   inquirer
     .prompt([
-      {
-        type: "list",
-        name: "deptid",
-        message: "What is the id number?",
-        choices: deptInfo
-      },
+      // {
+      //   type: "list",
+      //   name: "deptid",
+      //   message: "What is the id number?",
+      //   choices: deptInfo
+      // },
       {
         type: "input",
         name: "department_name",
@@ -199,7 +199,7 @@ function addNewDept(deptInfo) {
       db.query(query,
         {
           department_name: answer.department_name,
-          id: answer.id,
+          // id: answer.id,
         },
         function (err, res) {
           if (err) throw err;
@@ -217,13 +217,7 @@ function addNewDept(deptInfo) {
 function addRole() {
 
   let query =
-    `SELECT id, title, salary AS role
-    FROM role
-    JOIN role
-    ON role_id = role.id
-    JOIN department 
-    ON id = role.department_id
-    GROUP BY department.id, department_name`
+    `SELECT * FROM department`
 
   db.query(query, function (err, res) {
     if (err) throw err;

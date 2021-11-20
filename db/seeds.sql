@@ -22,19 +22,17 @@ INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
 -- manager
 ("Kelsey", "Perkins", 1, 10), 
-("Reagin", "Turner", 1),
-("Leci", "Reid", 1),
+("Reagin", "Turner", 1, NULL),
+("Leci", "Reid", 1, NULL),
 -- manager
 ("Brooke", "Scott", 2, 11),
-("Tynae", "Larry", 2),
-("Anne", "James", 2),
+("Tynae", "Larry", 2, NULL),
+("Anne", "James", 2, NULL),
 -- manager
 ("Dax", "Clark", 3, 12),
-("Ally", "Lee", 3),
-("Paige", "Smith", 3),
-("Tomas", "Rivera", 4),
-("William", "Bradely", 4),
+("Ally", "Lee", 3, NULL),
+("Paige", "Smith", 3, NULL),
+("Tomas", "Rivera", 4, NULL),
+("William", "Bradely", 4, NULL),
 -- manager
-("Glenn", "Taylor", 4, 13),
-
--- do i have to put NULL for ones who are not managers?
+("Glenn", "Taylor", 4, 13);
