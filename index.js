@@ -1,5 +1,4 @@
 const inquirer = require('inquirer');
-const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const table = require('console.table');
@@ -39,13 +38,13 @@ function start() {
         viewEmps();
         break;
       case 'Add A Department':
-        addDept(addingDepartment);
+        addDept();
         break;
       case 'Add A Role':
-        addRole(addingRole);
+        addRole();
         break;
       case 'Add An Employee':
-        addEmp(addingEmployee);
+        addEmp();
         break;
       case 'Update A Role':
         updatRole();
@@ -85,14 +84,7 @@ function viewEmps() {
   console.log('Employee List:');
 
   let query =
-  `SELECT first_name, last_name, employee.id, title, department_name AS department, salary, CONCAT(manager.first_name, ' ', manager.last_name AS manager
-  FROM employee 
-  LEFT JOIN role 
-  ON role_id = role.id
-  LEFT JOIN department 
-  ON department.id = role.department_id
-  LEFT JOIN employee manager
-  ON employee.id = employee.manager_id`
+  `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;`
 
   db.query(query, function (err, res) {
     if (err) throw err;
@@ -106,7 +98,7 @@ function viewEmps() {
 function addEmp() {
 
   let query =
-    `SELECT id, title, salary FROM role`
+    `SELECT id, title, salary FROM role;`
 
   db.query(query, function (err, res) {
     if (err) throw err;
@@ -168,13 +160,13 @@ function addNewEmp(info) {
 function addDept() {
 
   var query =
-    `SELECT * FROM department`
+    `SELECT * FROM department;`
 
   db.query(query, function (err, res) {
     if (err) throw err;
 
-    const deptInfo = res.map(({ id, department_name }) => ({
-      value: id `${id}`, department: `${department_name}`
+    const deptInfo = res.map(({ id, name }) => ({
+      value: id, department_name: `${name}`
     }));
 
     console.table(res);
@@ -186,14 +178,20 @@ function addDept() {
 function addNewDept(deptInfo) {
 
   inquirer
-    .prompt(
+    .prompt([
       {
         type: "list",
-        name: "",
-        message: "What is the department name & id number?",
+        name: "deptid",
+        message: "What is the id number?",
         choices: deptInfo
       },
-    )
+      {
+        type: "input",
+        name: "department_name",
+        message: "What is the department name?",
+        choices: deptInfo
+      },
+    ])
     .then(function (answer) {
       let query = `INSERT INTO department SET ?`
 
@@ -212,6 +210,76 @@ function addNewDept(deptInfo) {
         });
     });
 }
+
+
+// function to add a role
+function addRole() {
+
+  let query =
+    `SELECT id, title, salary AS role
+    FROM role
+    JOIN role
+    ON role_id = role.id
+    JOIN department 
+    ON id = role.department_id
+    GROUP BY department.id, department_name`
+
+  db.query(query, function (err, res) {
+    if (err) throw err;
+
+    const choices = res.map(({ id, department_name }) => ({
+      value: id, name: `${department_name}`
+    }));
+
+    console.table(res);
+
+    addNewRole(choices);
+  });
+}
+
+function addNewRole(choices) {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'title',
+        message: 'Role title?'
+      },
+      {
+        type: 'input',
+        name: 'salary',
+        message: 'Role salary'
+      },
+      {
+        type: 'list',
+        name: 'departmentId',
+        message: 'Which Department?',
+        choices: choices
+      },
+    ])
+    .then(function (answer) {
+
+      let query = `INSERT INTO role SET ?`
+
+      db.query(query, {
+        title: answer.title,
+        salary: answer.salary,
+        department_id: answer.department_id
+      },
+        function (err, res) {
+          if (err) throw err;
+
+          console.table(res);
+          console.log('New role added');
+
+          start();
+        });
+
+    });
+}
+
+
 const addingDepartment = [
   {
     type: "input",
@@ -236,6 +304,5 @@ const addingEmployee = [
   },
 ];
 
-
 module.exports = {addingDepartment, addingRole, addingEmployee}
-// beginQs,
+// beginQs

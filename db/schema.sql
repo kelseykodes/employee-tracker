@@ -5,11 +5,10 @@ USE team_db;
 
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  department_name VARCHAR(30) NOT NULL,
-  date_updated DATETIME
+  department_name VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE role (
+CREATE TABLE role(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL,
@@ -26,3 +25,4 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role(id), 
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
+ 

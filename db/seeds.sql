@@ -7,7 +7,7 @@ INSERT INTO role (title, salary, department_id)
 VALUES 
 ('Technical Manager', 150000, 1),
 ('Fullstack Developer', 120000, 1),
-('Fullstack Developer', 70000, 1),
+('Junior Developer', 70000, 1),
 ('Sales Manager', 110000, 2),
 ('Customer Service Representive', 90000, 2),
 ('Sales Associate', 60000, 2),
