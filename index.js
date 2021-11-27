@@ -6,6 +6,7 @@ const db = require('./connect/connect');
 
 db.connect(function (err) {
   if (err) throw err;
+  console.log(err);
   start();
 });
 
@@ -13,8 +14,8 @@ function start() {
   inquirer
   .prompt({
     type: "list",
+    name: "choices",
     message: "Welcome! Please select a task from the following:",
-    name: "options",
     choices: [
       "View All Departments",
       "View All Roles",
@@ -25,37 +26,37 @@ function start() {
       "Update A Role",
       "Quit"
     ],
-  })
-  .then(function ({ options }) {
-    switch (options) {
-      case 'View All Departments':
-        viewDepts();
-        break;
-      case 'View All Roles':
-        viewRoles();
-        break;
-      case 'View All Employees':
-        viewEmps();
-        break;
-      case 'Add A Department':
-        addDept();
-        break;
-      case 'Add A Role':
-        addRole();
-        break;
-      case 'Add An Employee':
-        addEmp();
-        break;
-      case 'Update A Role':
-        updatRole();
-        break;
-     case "Quit":
-        db.end();
-        console.log('Goodbye!');
-        break;
-    }
-  });
-}
+  }
+)
+  .then((response) => {
+    const {choices} = response;
+  if (choices == 'View All Departments') {
+    viewDepts();
+  }
+  if (choices == 'View All Roles') {
+    viewRoles();
+  }
+  if (choices == 'View All Employees') {
+    viewEmps();
+  }
+  if (choices == 'Add A Department') {
+    addDept();
+  }
+  if (choices == 'Add A Role') {
+    addRole();
+  }
+  if (choices == 'Add An Employee') {
+    addEmp();
+  }
+  if (choices == 'Update A Role') {
+    updatRole();
+  }
+  if (choices == 'Quit') {
+    db.end();
+    console.log('Goodbye!');
+  }
+});
+};
 // QUERIES:
 
 //function to display team departments
@@ -266,7 +267,6 @@ function addNewRole(choices) {
           if (err) throw err;
 
           console.table(res);
-          console.log('New role added');
 
           start();
         });
@@ -274,7 +274,7 @@ function addNewRole(choices) {
     });
 }
 
-
+//questions 
 const addingDepartment = [
   {
     type: "input",
@@ -300,4 +300,3 @@ const addingEmployee = [
 ];
 
 module.exports = {addingDepartment, addingRole, addingEmployee}
-// beginQs
