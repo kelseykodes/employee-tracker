@@ -3,10 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const table = require('console.table');
 const db = require('./connect/connect');
+const { createInterface } = require('readline');
 
-db.connect(function (err) {
-  if (err) throw err;
-  console.log(err);
+db.connect(function (error) {
+  if (error) throw error;
+  console.log(error);
   start();
 });
 
@@ -57,46 +58,46 @@ function start() {
   }
 });
 };
-// QUERIES:
 
-//function to display team departments
+
+// display team departments
 function viewDepts() {
   console.log('Department List:');
 
   let query =  `SELECT * FROM department;`
-  db.query(query, function (err, res) {
-    if (err) throw err;
+  db.query(query, function (error, res) {
+    if (error) throw error;
     console.table(res);
     start();
   });
 }
-//function to display team roles
+//display team roles
 function viewRoles() {
   console.log('Role List:');
 
   let query =  `SELECT * FROM role JOIN department;`
-  db.query(query, function (err, res) {
-    if (err) throw err;
+  db.query(query, function (error, res) {
+    if (error) throw error;
     console.table(res);
     start();
   });
 }
-//function to display team employees
+//display team employees
 function viewEmps() {
   console.log('Employee List:');
 
   let query =
   `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;`
 
-  db.query(query, function (err, res) {
-    if (err) throw err;
+  db.query(query, function (error, res) {
+    if (error) throw error;
     console.table(res);
     start();
   });
 }
 
 
-//function to add employee 
+//add employee 
 function addEmp() {
 
   let query =
@@ -105,29 +106,20 @@ function addEmp() {
   db.query(query, function (err, res) {
     if (err) throw err;
 
-    const info = res.map(({ id, title, salary }) => ({
-      value: id `${id}`, title: `${title}`, salary: `${salary}`
+    const info = res.map(({ title, salary, id }) => ({
+       title: `${title}`, salary: `${salary}, `, value: id
     }));
-
-    console.table(res);
-
-    addNewEmp(info);
-  });
-}
-
-function addNewEmp(info) {
-
-  inquirer
+    inquirer
     .prompt([
       {
-        type: "input",
-        name: "first_name",
-        message: "What is the employee's first name?"
+        type: 'input',
+        name: 'first_name',
+        message: 'first name of new employee?'
       },
       {
-        type: "input",
-        name: "last_name",
-        message: "What is the employee's last name?"
+        type: 'input',
+        name: 'last_name',
+        message: 'last name of new employee?'
       },
       {
         type: "list",
@@ -136,27 +128,63 @@ function addNewEmp(info) {
         choices: info
       },
     ])
-    .then(function (answers) {
+    .then( answers => {
+    const empInfo = [answers.first_name, answers.last_name, answers.role_id];
+    empInfo.push(answers);
+    let query = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+    db.query(query,empInfo, (err) => {
+      if (err) throw err;
 
-      let query = `INSERT INTO employee SET ?`
-      
-      db.query(query,
-        {
-          first_name: answers.first_name,
-          last_name: answers.last_name,
-          role_id: answers.role_id,
-        },
-        function (err, res) {
-          if (err) throw err;
-
-          console.table(res);
-          console.log(res.insertedRows + "New employee added.");
-
-          start();
-        });
-      
+        console.table(res);
+        console.log("new employee added.");
+        start();
     });
+    })
+    console.table(res);
+    // addNewEmp(info);
+  });
 }
+
+// function addNewEmp(info) {
+
+//   inquirer
+//     .prompt([
+//       {
+//         type: 'input',
+//         name: 'first_name',
+//         message: 'first name of new employee?'
+//       },
+//       {
+//         type: 'input',
+//         name: 'last_name',
+//         message: 'last name of new employee?'
+//       },
+//       {
+//         type: "list",
+//         name: "role_id",
+//         message: "What is the employee's role?",
+//         choices: info
+//       },
+//     ])
+//     .then((answers) => {
+
+//       let query = `INSERT INTO employee (first_name, last_name, role_id)
+//       VALUES (?, ?, ?)`;
+//       db.query(query,
+//        {
+//         first_name: answers.first_name,
+//         last_name: answers.last_name,
+//         role_id: answers.role_id,
+//        },
+//        function (err, res) {
+//         if (err) throw err;
+
+//         console.table(res);
+//         console.log("new employee added.");
+//         start();
+//         });
+//     });
+// }
 
 
 function addDept() {
@@ -164,15 +192,14 @@ function addDept() {
   var query =
     `SELECT * FROM department;`
 
-  db.query(query, function (err, res) {
-    if (err) throw err;
+  db.query(query, function (error, res) {
+    if (error) throw error;
 
     const deptInfo = res.map(({ id, name }) => ({
       value: id, department_name: `${name}`
     }));
 
     console.table(res);
-
     addNewDept(deptInfo);
   });
 }
@@ -181,16 +208,10 @@ function addNewDept(deptInfo) {
 
   inquirer
     .prompt([
-      // {
-      //   type: "list",
-      //   name: "deptid",
-      //   message: "What is the id number?",
-      //   choices: deptInfo
-      // },
       {
-        type: "input",
-        name: "department_name",
-        message: "What is the department name?",
+        type: 'input',
+        name: 'department_name',
+        message: "new department name?",
         choices: deptInfo
       },
     ])
@@ -202,33 +223,31 @@ function addNewDept(deptInfo) {
           department_name: answer.department_name,
           // id: answer.id,
         },
-        function (err, res) {
-          if (err) throw err;
+        function (error, res) {
+          if (error) throw error;
 
           console.table(res);
-          console.log(res.insertedRows + "New department added.");
-
+          console.log("new department added.");
           start();
         });
     });
 }
 
 
-// function to add a role
+//add a role
 function addRole() {
 
   let query =
     `SELECT * FROM department`
 
-  db.query(query, function (err, res) {
-    if (err) throw err;
+  db.query(query, function (error, res) {
+    if (error) throw error;
 
-    const choices = res.map(({ id, department_name }) => ({
-      value: id, name: `${department_name}`
+    const choices = res.map(({ department_name, id }) => ({
+       name: `${department_name}`, value: id
     }));
 
     console.table(res);
-
     addNewRole(choices);
   });
 }
@@ -240,17 +259,17 @@ function addNewRole(choices) {
       {
         type: 'input',
         name: 'title',
-        message: 'Role title?'
+        message: 'title?'
       },
       {
         type: 'input',
         name: 'salary',
-        message: 'Role salary'
+        message: 'salary'
       },
       {
         type: 'list',
         name: 'departmentId',
-        message: 'Which Department?',
+        message: 'Please select a department:',
         choices: choices
       },
     ])
@@ -263,8 +282,8 @@ function addNewRole(choices) {
         salary: answer.salary,
         department_id: answer.department_id
       },
-        function (err, res) {
-          if (err) throw err;
+        function (error, res) {
+          if (error) throw error;
 
           console.table(res);
 
