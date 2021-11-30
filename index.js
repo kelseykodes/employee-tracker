@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const table = require('console.table');
 const db = require('./connect/connect');
-const { createInterface } = require('readline');
 
 db.connect(function (error) {
   if (error) throw error;
@@ -128,9 +127,9 @@ function addEmp() {
         choices: info
       },
     ])
-    .then( answers => {
-    const empInfo = [answers.first_name, answers.last_name, answers.role_id];
-    empInfo.push(answers);
+    .then( responses => {
+    const empInfo = [responses.first_name, responses.last_name, responses.role_id];
+    empInfo.push(responses);
     let query = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
     db.query(query,empInfo, (err) => {
       if (err) throw err;
@@ -141,51 +140,8 @@ function addEmp() {
     });
     })
     console.table(res);
-    // addNewEmp(info);
   });
 }
-
-// function addNewEmp(info) {
-
-//   inquirer
-//     .prompt([
-//       {
-//         type: 'input',
-//         name: 'first_name',
-//         message: 'first name of new employee?'
-//       },
-//       {
-//         type: 'input',
-//         name: 'last_name',
-//         message: 'last name of new employee?'
-//       },
-//       {
-//         type: "list",
-//         name: "role_id",
-//         message: "What is the employee's role?",
-//         choices: info
-//       },
-//     ])
-//     .then((answers) => {
-
-//       let query = `INSERT INTO employee (first_name, last_name, role_id)
-//       VALUES (?, ?, ?)`;
-//       db.query(query,
-//        {
-//         first_name: answers.first_name,
-//         last_name: answers.last_name,
-//         role_id: answers.role_id,
-//        },
-//        function (err, res) {
-//         if (err) throw err;
-
-//         console.table(res);
-//         console.log("new employee added.");
-//         start();
-//         });
-//     });
-// }
-
 
 function addDept() {
 
@@ -215,13 +171,12 @@ function addNewDept(deptInfo) {
         choices: deptInfo
       },
     ])
-    .then(function (answer) {
+    .then(function (response) {
       let query = `INSERT INTO department SET ?`
 
       db.query(query,
         {
-          department_name: answer.department_name,
-          // id: answer.id,
+          department_name: response.department_name,
         },
         function (error, res) {
           if (error) throw error;
@@ -273,14 +228,14 @@ function addNewRole(choices) {
         choices: choices
       },
     ])
-    .then(function (answer) {
+    .then(function (response) {
 
       let query = `INSERT INTO role SET ?`
 
       db.query(query, {
-        title: answer.title,
-        salary: answer.salary,
-        department_id: answer.department_id
+        title: response.title,
+        salary: response.salary,
+        department_id: response.department_id
       },
         function (error, res) {
           if (error) throw error;
